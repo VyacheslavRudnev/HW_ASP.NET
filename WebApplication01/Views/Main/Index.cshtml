@@ -1,0 +1,24 @@
+﻿@model List<WebApplication01.Data.Entities.CategoryEntity>
+@{
+    Layout = "_MainLayout";
+}
+
+<h1 class="text-center">оберіть потрібну категорію</h1>
+
+<div class="container">
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-3">
+                <div class="card" style="width: 100%;">
+                    <img src="@item.Image" class="card-img-top">
+                    <div class="card-body">
+                        <h5 class="card-title">@item.Name</h5>
+                        <p class="card-text">@item.Description</p>
+                        <a href="#" class="btn btn-primary">Детальніше</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
