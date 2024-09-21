@@ -1,0 +1,28 @@
+﻿@model WebApplication01.Data.Entities.CategoryEntity
+
+@{
+    Layout = "_MainLayout";
+}
+
+<h2 class="text-center">Додавання категорії товару</h2>
+
+<div class="container mt-4">
+    <form asp-action="Create" method="post">
+        <div class="form-group mb-3 w-50">
+            <label for="name">Назва категорії товару</label>
+            <input type="text" class="form-control" id="name" name="Name" placeholder="Назва категорії" required>
+        </div>
+
+        <div class="form-group mb-3 w-50">
+            <label for="description">Опис</label>
+            <textarea class="form-control" id="description" name="Description" placeholder="Опис категорії" required></textarea>
+        </div>
+
+        <div class="form-group mb-3 w-50">
+            <label for="image">URL зображення</label>
+            <input type="text" class="form-control" id="image" name="Image">
+        </div>
+
+        <button type="submit" class="btn btn-primary">Додати категорію</button>
+    </form>
+</div>

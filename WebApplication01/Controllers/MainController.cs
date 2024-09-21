@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WebApplication01.Data;
+using WebApplication01.Data.Entities;
 
 namespace WebApplication01.Controllers
 {
@@ -20,5 +21,24 @@ namespace WebApplication01.Controllers
 			var model = _dbContext.Categories.ToList();
 			return View(model);
         }
+
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Create(CategoryEntity category)
+        {
+            if (ModelState.IsValid)
+            {
+                _dbContext.Categories.Add(category);
+                _dbContext.SaveChanges();
+                return RedirectToAction("Index");
+            }
+
+            return View(category);
+        }
     }
+
 }
