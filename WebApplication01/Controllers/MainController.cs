@@ -39,6 +39,22 @@ namespace WebApplication01.Controllers
 
             return View(category);
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Delete(int id)
+        {
+            var category = _dbContext.Categories.FirstOrDefault(c => c.Id == id);
+            if (category != null)
+            {
+                _dbContext.Categories.Remove(category);
+                _dbContext.SaveChanges();
+            }
+
+            return RedirectToAction("Index");
+        }
+
+        
     }
 
 }

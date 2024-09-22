@@ -16,6 +16,10 @@
                         <h5 class="card-title">@item.Name</h5>
                         <p class="card-text">@item.Description</p>
                         <a href="#" class="btn btn-primary">Детальніше</a>
+                        <form asp-action="Delete" asp-route-id="@item.Id" method="post" style="display:inline;" onsubmit="return confirmDelete();">
+                            <button type="submit" class="btn btn-danger">Видалити</button>
+                            @Html.AntiForgeryToken()
+                        </form>
                     </div>
                 </div>
             </div>
@@ -29,4 +33,7 @@
         <a asp-action="Create" class="btn btn-outline-primary">Додати</a>
     </div>
 </div>
+
+
+
 
