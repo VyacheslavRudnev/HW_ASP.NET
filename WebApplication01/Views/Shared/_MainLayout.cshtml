@@ -18,14 +18,12 @@
     @await Html.PartialAsync("_Header")
 
     <main>
-        
         @RenderBody()
-
     </main>
 
     <script src="/lib/bootstrap/js/bootstrap.min.js"></script>
 
-
+    @await RenderSectionAsync("Scripts", required: false)
 
 </body>
 </html>

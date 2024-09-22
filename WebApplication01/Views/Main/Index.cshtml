@@ -1,24 +1,61 @@
 ﻿@model List<WebApplication01.Data.Entities.CategoryEntity>
-@{
-    Layout = "_MainLayout";
-}
 
 <h1 class="text-center">оберіть потрібну категорію</h1>
 
 <div class="container">
+    <a asp-action="Create" class="btn btn-success"><link href="#" rel="stylesheet" />Додати</a>
     <div class="row">
         @foreach (var item in Model)
         {
             <div class="col-md-3">
                 <div class="card" style="width: 100%;">
-                    <img src="@item.Image" class="card-img-top">
+                    <img src="/uploading/@item.Image" class="card-img-top">
                     <div class="card-body">
                         <h5 class="card-title">@item.Name</h5>
                         <p class="card-text">@item.Description</p>
-                        <a href="#" class="btn btn-primary">Детальніше</a>
+                        <a href="#" class="btn btn-danger" data-delete="@item.Id">Видалити</a>
                     </div>
                 </div>
             </div>
         }
     </div>
 </div>
+
+<div class="modal" id="modalDelete" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Ви дійсно бажаєте видалити</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Буде проведено видалення <span id="categoryName"></span>?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary">Видалити</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Скасувати</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            var modalDelete = new bootstrap.Modal(document.getElementById('modalDelete'));
+            
+            var buttonsDelete = document.querySelectorAll('[data-delete]');
+            console.log("Loading app", buttonsDelete);
+            buttonsDelete.forEach(btn => {
+				btn.addEventListener("click", function (event) {
+					event.preventDefault();
+                    var id = this.getAttribute('data-delete');
+                    console.log("Delete id", id);
+                    modalDelete.show();
+				});
+			});
+        });
+    </script>
+}
