@@ -64,6 +64,69 @@ namespace WebApplication01.Controllers
             return Redirect("/");
            
         }
+        [HttpGet]
+        public IActionResult Edit(int id)
+        {
+            var category = _dbContext.Categories.FirstOrDefault(c => c.Id == id);
+            if (category == null)
+            {
+                return NotFound();
+            }
+
+            var model = new CategoryEditViewModel
+            {
+                Id = category.Id,
+                Name = category.Name,
+                Description = category.Description,
+                ExistingImage = category.Image
+            };
+            return View(model);
+        }
+
+        [HttpPost]
+        public IActionResult Edit(CategoryEditViewModel model)
+        {
+            var entity = _dbContext.Categories.FirstOrDefault(c => c.Id == model.Id);
+            if (entity == null)
+            {
+                return NotFound();
+            }
+
+            entity.Name = model.Name;
+            entity.Description = model.Description;
+
+            if (model.Photo != null)
+            {
+                var dirName = "uploading";
+                var dirSave = Path.Combine(_environment.WebRootPath, dirName);
+                if (!Directory.Exists(dirSave))
+                {
+                    Directory.CreateDirectory(dirSave);
+                }
+
+                string fileName = Guid.NewGuid().ToString() + Path.GetExtension(model.Photo.FileName);
+                var saveFile = Path.Combine(dirSave, fileName);
+                using (var stream = new FileStream(saveFile, FileMode.Create))
+                {
+                    model.Photo.CopyTo(stream);
+                }
+
+                // Видалення старого зображення
+                if (!string.IsNullOrEmpty(entity.Image))
+                {
+                    var oldImagePath = Path.Combine(_environment.WebRootPath, "uploading", entity.Image);
+                    if (System.IO.File.Exists(oldImagePath))
+                    {
+                        System.IO.File.Delete(oldImagePath);
+                    }
+                }
+
+                entity.Image = fileName;
+            }
+
+            _dbContext.SaveChanges();
+            return RedirectToAction("Index");
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]

@@ -13,7 +13,7 @@
                     <div class="card-body">
                         <h5 class="card-title">@item.Name</h5>
                         <p class="card-text">@item.Description</p>
-                        <a href="#" data-detail="@item.Id" class="btn btn-primary">Детальніше</a>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary">Редагувати</a>
                         <a href="#" class="btn btn-danger" data-detail="@item.Id" data-delete="@item.Name">Видалити</a>
                     </div>
                 </div>
@@ -49,6 +49,7 @@
 
 
 @section Scripts {
+    
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             var modalDelete = new bootstrap.Modal(document.getElementById('modalDelete'));
