@@ -64,5 +64,36 @@ namespace WebApplication01.Controllers
             return Redirect("/");
            
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Delete(int id)
+        {
+            Console.WriteLine($"Запит на видалення категорії з id: {id}");
+            var category = _dbContext.Categories.FirstOrDefault(c => c.Id == id);
+            if (category != null)
+            {
+                var imagePath = Path.Combine(_environment.WebRootPath, "uploading", category.Image);
+                if (System.IO.File.Exists(imagePath))
+                {
+                    System.IO.File.Delete(imagePath);
+                    Console.WriteLine($"Зображення {category.Image} було видалено з серверу.");
+                }
+                else
+                {
+                    Console.WriteLine($"Зображення {category.Image} не знайдено.");
+                }
+
+                _dbContext.Categories.Remove(category);
+                _dbContext.SaveChanges();
+              
+                Console.WriteLine($"Категорія з id {id} була видалена.");
+            }
+            else
+            {
+                Console.WriteLine($"Категорія з id {id} не знайдена.");
+            }
+            return RedirectToAction("Index");
+        }
     }
 }
