@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
 using WebApplication01.Data;
 using WebApplication01.Data.Entities;
 using WebApplication01.Models.Category;
@@ -31,39 +33,7 @@ namespace WebApplication01.Controllers
             //Ми повертає View - пусту, яка відобраєате сторінку де потрібно ввести дані для категорії
             return View();
         }
-        [HttpPost]//прийняття даних з форми
-        public IActionResult Create(CategoryCreateViewModel model)
-        {
-            var entity = new CategoryEntity();
-
-            //Збереження в базу даних
-            var dirName = "uploading";
-            var dirSave = Path.Combine(_environment.WebRootPath, dirName);
-            if (!Directory.Exists(dirSave))
-            {
-                Directory.CreateDirectory(dirSave);
-            }
-            if (model.Photo != null)
-            {
-                //унікальне значення для імені файлу, яке ніколи не повториться
-                string fileName = Guid.NewGuid().ToString();
-                var ext = Path.GetExtension(model.Photo.FileName);
-                fileName += ext;
-                var saveFile = Path.Combine(dirSave, fileName);
-                using (var stream = new FileStream(saveFile, FileMode.Create))
-                {
-                    model.Photo.CopyTo(stream);
-                }
-                entity.Image = fileName;
-            }
-            entity.Name = model.Name;
-            entity.Description = model.Description;
-            _dbContext.Categories.Add(entity);
-            _dbContext.SaveChanges();
-            //переходимо по списку всіх категорій, тобто визиваємо метод index для нашого контролера
-            return Redirect("/");
-           
-        }
+        
         [HttpGet]
         public IActionResult Edit(int id)
         {
@@ -127,6 +97,70 @@ namespace WebApplication01.Controllers
             _dbContext.SaveChanges();
             return RedirectToAction("Index");
         }
+        [HttpPost]
+        public IActionResult Create(CategoryCreateViewModel model)
+        {
+            var entity = new CategoryEntity();
+
+            var dirName = "uploading";
+            var dirSave = Path.Combine(_environment.WebRootPath, dirName);
+            if (!Directory.Exists(dirSave))
+            {
+                Directory.CreateDirectory(dirSave);
+            }
+
+            if (model.Photo != null)
+            {
+                // Унікальне ім'я файлу без розширення
+                string fileName = Guid.NewGuid().ToString();
+                var ext = Path.GetExtension(model.Photo.FileName);
+                var baseFileName = fileName;
+
+                using (var stream = new MemoryStream())
+                {
+                    model.Photo.CopyTo(stream);
+                    stream.Position = 0;
+
+                    using (var image = SixLabors.ImageSharp.Image.Load(stream))
+                    {
+                        var sizes = new[] { 150, 300, 600, 1200 };
+
+                        foreach (var size in sizes)
+                        {
+                            var resizedImage = image.Clone(ctx => ctx.Resize(new SixLabors.ImageSharp.Processing.ResizeOptions
+                            {
+                                Mode = SixLabors.ImageSharp.Processing.ResizeMode.Max,
+                                Size = new SixLabors.ImageSharp.Size(size, size)  
+                            }));
+
+                            // Унікальні імена для різних розмірів
+                            var resizedFileName = $"{baseFileName}-{size}.webp";
+                            var resizedFilePath = Path.Combine(dirSave, resizedFileName);
+
+                            // Збереження зображення у форматі WebP
+                            using (var output = System.IO.File.Create(resizedFilePath))
+                            {
+                                resizedImage.SaveAsWebp(output);
+                            }
+
+                            // Для картки обираємо зображення розміром 300
+                            if (size == 300)
+                            {
+                                entity.Image = resizedFileName;  // Зберігаємо шлях до зображення 300px для картки
+                            }
+                        }
+                    }
+                }
+            }
+
+            entity.Name = model.Name;
+            entity.Description = model.Description;
+            _dbContext.Categories.Add(entity);
+            _dbContext.SaveChanges();
+
+            return Redirect("/");
+        }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
