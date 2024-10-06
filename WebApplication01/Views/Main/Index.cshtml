@@ -7,13 +7,14 @@
     <div class="row">
         @foreach (var item in Model)
         {
-            <div class="col-md-3">
+            <div class="col-md-3" id="@(" ProductItem" + @item.Id)">
                 <div class="card" style="width: 100%;">
-                    <img src="/uploading/@item.Image" class="card-img-top">
+                    <img src="/uploading/300_@item.Image" class="card-img-top">
                     <div class="card-body">
                         <h5 class="card-title">@item.Name</h5>
                         <p class="card-text">@item.Description</p>
-                        <a href="#" class="btn btn-danger" data-delete="@item.Id">Видалити</a>
+                        <a href="#" class="btn btn-danger" data-name="@item.Name"
+                            data-delete="@item.Id">Видалити</a>
                     </div>
                 </div>
             </div>
@@ -21,41 +22,56 @@
     </div>
 </div>
 
-<div class="modal" id="modalDelete" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
+<div class="modal" id="modalDelete" tabindex="-1">
+    <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Ви дійсно бажаєте видалити</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <p>Буде проведено видалення <span id="categoryName"></span>?</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary">Видалити</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Скасувати</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Скасувати</button>
+                <button type="button" class="btn btn-primary" id="deleteYes">Підтвердити</button>
             </div>
         </div>
     </div>
 </div>
 
 @section Scripts {
+	<script src="/lib/axios/axios.min.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             var modalDelete = new bootstrap.Modal(document.getElementById('modalDelete'));
-            
+
             var buttonsDelete = document.querySelectorAll('[data-delete]');
-            console.log("Loading app", buttonsDelete);
+            var categoryName = document.getElementById("categoryName");
+            var idDelete = 0;
             buttonsDelete.forEach(btn => {
-				btn.addEventListener("click", function (event) {
-					event.preventDefault();
+                btn.addEventListener("click", function (event) {
+                    event.preventDefault();
                     var id = this.getAttribute('data-delete');
-                    console.log("Delete id", id);
+                    var name = this.getAttribute('data-name');
+                    idDelete = id;
+                    categoryName.innerHTML = name;
                     modalDelete.show();
-				});
-			});
+                });
+            });
+
+            document.getElementById("deleteYes").addEventListener("click", () => {
+                console.log("Delete by id", idDelete);
+                axios.post("/Main/Delete/" + idDelete)
+                    .then(res => { //Очікуємо результат від сервера
+                        //Після успішного видалення перегружаємо сторінку
+                        //window.location.reload(); //Перезавантажуємо сторінку
+                        modalDelete.hide();
+                        document.getElementById(" ProductItem" + idDelete).remove();
+                        //console.log("Усішно видалили");
+                        
+                    });
+            });
         });
     </script>
 }

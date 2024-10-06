@@ -5,6 +5,10 @@
     {
       "library": "bootstrap@5.3.3",
       "destination": "wwwroot/lib/bootstrap/"
+    },
+    {
+      "library": "axios@1.7.7",
+      "destination": "wwwroot/lib/axios/"
     }
   ]
 }

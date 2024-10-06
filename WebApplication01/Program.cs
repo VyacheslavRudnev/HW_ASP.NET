@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using WebApplication01.Data;
 using WebApplication01.Data.Entities;
+using WebApplication01.interfaces;
+using WebApplication01.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +11,7 @@ builder.Services.AddDbContext<AppBimbaDbContext>(options =>
 	options.UseNpgsql(builder.Configuration.GetConnectionString("MyConnectionDB")));
 
 builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<IImageWorker, ImageWorker>();
 
 var app = builder.Build();
 
@@ -30,33 +33,37 @@ app.MapControllerRoute(
 using (var serviceScope = app.Services.CreateScope())
 {
 	var context = serviceScope.ServiceProvider.GetService<AppBimbaDbContext>();
+	var imageWorker = serviceScope.ServiceProvider.GetService<IImageWorker>();
 
 	// Apply migrations if they are not applied
 	context.Database.Migrate(); //автоматичний запуск міграцій на БД, якщо їх там немає
 
 	if (!context.Categories.Any())
 	{
-		var kovbasa = new CategoryEntity
+		var imageName = imageWorker.Save("https://rivnepost.rv.ua/img/650/korisnoi-kovbasi-ne-buvae-hastroenterolohi-nazvali_20240612_4163.jpg");
+        var kovbasa = new CategoryEntity
 		{
 			Name = "Ковбаси",
-			Image = "https://rivnepost.rv.ua/img/650/korisnoi-kovbasi-ne-buvae-hastroenterolohi-nazvali_20240612_4163.jpg",
+			Image = imageName,
 			Description = "Тим часом відмовлятися від ковбаси повністю не обов’язково. " +
 			"Важливо пам’ятати, що це делікатес, який можна вживати не більше 50 грамів на день."
 		};
 
-		var cheese = new CategoryEntity
+        imageName = imageWorker.Save("https://www.vsesmak.com.ua/sites/default/files/styles/large/public/field/image/syrnaya_gora_5330_1900_21.jpg?itok=RPUrRskl");
+        var cheese = new CategoryEntity
 		{
 			Name = "Сири",
-			Image = "https://www.vsesmak.com.ua/sites/default/files/styles/large/public/field/image/syrnaya_gora_5330_1900_21.jpg?itok=RPUrRskl",
+			Image = imageName,
 			Description = "Cир – один з найчастіших гостей на нашому столі. " +
 			"Адже це і смачно, і корисно, і доступно. Не можна сказати, що увесь, " +
 			"що продається на прилавках супермаркетів твердий сир – неякісний."
 		};
 
-		var bread = new CategoryEntity
+        imageName = imageWorker.Save("https://tvoemisto.tv/media/gallery/full/7/7/77777777777777777_e26fc.png");
+        var bread = new CategoryEntity
 		{
 			Name = "Хліб",
-			Image = "https://tvoemisto.tv/media/gallery/full/7/7/77777777777777777_e26fc.png",
+			Image = imageName,
 			Description = "У сегменті ринку «здорового харчування» існують сорти хліба, " +
 			"які майже не сприяють набору зайвої ваги – наприклад, цільнозерновий хліб."
 		};
