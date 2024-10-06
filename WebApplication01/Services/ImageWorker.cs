@@ -86,4 +86,22 @@ public class ImageWorker : IImageWorker
                 File.Delete(fileSave);
         }
     }
+
+    public string Save(IFormFile file)
+    {
+        try
+        {
+            using (var memoryStream = new MemoryStream())
+            {
+                file.CopyTo(memoryStream);
+                byte[] imageBytes = memoryStream.ToArray();
+                return CompresImage(imageBytes);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"An error occurred: {ex.Message}");
+            return String.Empty;
+        }
+    }
 }

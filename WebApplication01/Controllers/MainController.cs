@@ -50,13 +50,13 @@ namespace WebApplication01.Controllers
             if (model.Photo != null)
             {
                 //унікальне значенн, яке ніколи не повториться
-                string fileName = Guid.NewGuid().ToString();
-                var ext = Path.GetExtension(model.Photo.FileName);
-                fileName += ext;
-                var saveFile = Path.Combine(dirSave, fileName);
-                using (var stream = new FileStream(saveFile, FileMode.Create))
-                    model.Photo.CopyTo(stream);
-                entity.Image = fileName;
+                //string fileName = Guid.NewGuid().ToString();
+                //var ext = Path.GetExtension(model.Photo.FileName);
+                //fileName += ext;
+                //var saveFile = Path.Combine(dirSave, fileName);
+                //using (var stream = new FileStream(saveFile, FileMode.Create)) 
+                //    model.Photo.CopyTo(stream);
+                entity.Image = _imageWorker.Save(model.Photo);
             }
             entity.Name = model.Name;
             entity.Description = model.Description;
