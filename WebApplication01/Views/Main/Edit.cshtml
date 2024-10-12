@@ -20,27 +20,14 @@
                 <label asp-for="Photo" class="form-label">Оновити зображення</label>
                 <input class="form-control" type="file" asp-for="Photo">
             </div>
-
-            @* @if (Model.ExistingImage != null)
+            
+            @if (!string.IsNullOrEmpty(Model.ExistingImage))
             {
                 <div class="mb-3">
-                    <label>Поточні зображення:</label>
-                    <img src="/uploading/@Model.ExistingImage" alt="@Model.Name" style="width: 100px;" />
+                    <label>Поточне зображення:</label>
+                    <img src="/uploading/150_@Model.ExistingImage" alt="@Model.Name" style="width: 150px; height: 150px;" />
                 </div>
-            } *@
-
-            <div class="mb-3">
-                <label>Існуючі зображення:</label>
-                <div class="row">
-                    @foreach (var imagePath in Model.ImagePaths)
-                    {
-                        <div class="col-md-4 mb-3">
-                            <img src="@imagePath" alt="Image" style="width: 150px; height: 150px;" />
-                            <p>@imagePath</p> <!-- Назва файлу або шлях -->
-                        </div>
-                    }
-                </div>
-            </div>
+            }
 
             <button type="submit" class="btn btn-primary">Зберегти</button>
             <a asp-action="Index" class="btn btn-secondary">Скасувати</a>

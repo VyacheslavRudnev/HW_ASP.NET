@@ -90,8 +90,7 @@ namespace WebApplication01.Controllers
                 Id = category.Id,
                 Name = category.Name,
                 Description = category.Description,
-                //ExistingImage = category.Image
-                ImagePaths = imagePaths//Список шляхів до зображень
+                ExistingImage = category.Image
             };
             return View(model);
         }

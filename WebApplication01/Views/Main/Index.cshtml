@@ -69,12 +69,9 @@
                 axios.post("/Main/Delete/" + idDelete)
                     .then(res => { //Очікуємо результат від сервера
                         //Після успішного видалення перегружаємо сторінку
-                        //window.location.reload(); //Перезавантажуємо сторінку
                         modalDelete.hide();
                         document.getElementById(" ProductItem" + idDelete).remove();
-                        //console.log("Усішно видалили");
-                        
-                    });
+                });
             });
         });
     </script>

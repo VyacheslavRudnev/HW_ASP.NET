@@ -11,7 +11,6 @@ public class CategoryEditViewModel
     public string? Description { get; set; }
     public string? ExistingImage { get; set; }
     public IFormFile? Photo { get; set; }
-    public List<string> ImagePaths { get; set; } //Список шляхів до зображень
 }
     
 
