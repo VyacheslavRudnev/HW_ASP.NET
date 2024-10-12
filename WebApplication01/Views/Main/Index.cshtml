@@ -7,9 +7,12 @@
     <div class="row">
         @foreach (var item in Model)
         {
-            <div class="col-md-3" id="@(" ProductItem" + @item.Id)">
+            <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-4" id="@(" ProductItem" + @item.Id)">
                 <div class="card" style="width: 100%;">
-                    <img src="/uploading/300_@item.Image" class="card-img-top">
+                    <div class="img-container">
+                        <img src="/uploading/300_@item.Image" class="card-img-top">
+                    </div>
+                    @* <img src="/uploading/300_@item.Image" class="card-img-top"> *@
                     <div class="card-body">
                         <h5 class="card-title">@item.Name</h5>
                         <p class="card-text">@item.Description</p>
@@ -17,8 +20,6 @@
                             data-delete="@item.Id">Видалити</a>
                         <a asp-action="Edit" class="btn btn-primary" data-name="@item.Name"
                            asp-route-id="@item.Id">Редагувати</a>
-                        
-
                     </div>
                 </div>
             </div>

@@ -11,7 +11,22 @@
     <title>Бомба</title>
     <link href="/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
 	<link href="/css/site.css" rel="stylesheet" />
+    <style>
+        .img-container {
+            width: 100%;
+            height: 200px; /* Задаємо фіксовану висоту для всіх зображень */
+            overflow: hidden; /* Обрізаємо зображення, якщо воно більше */
+        }
+
+        .img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Зберігає пропорції зображення та робить його масштабування */
+        }
+
+    </style>
 </head>
+
 <body data-new-gr-c-s-check-loaded="14.1195.0" data-gr-ext-installed="">
 
 
