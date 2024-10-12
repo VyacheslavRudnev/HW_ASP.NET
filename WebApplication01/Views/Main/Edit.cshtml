@@ -1,0 +1,53 @@
+﻿@model WebApplication01.Models.Category.CategoryEditViewModel
+
+<h1 class="text-center">Редагувати категорію</h1>
+
+<div class="container">
+    <div class="row">
+        <form method="post" class="col-md-6 offset-md-3" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label">Назва категорії</label>
+                <input type="text" class="form-control" asp-for="Name">
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Description" class="form-label">Опис категорії</label>
+                <textarea class="form-control" asp-for="Description"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Photo" class="form-label">Оновити зображення</label>
+                <input class="form-control" type="file" asp-for="Photo">
+            </div>
+
+            @* @if (Model.ExistingImage != null)
+            {
+                <div class="mb-3">
+                    <label>Поточні зображення:</label>
+                    <img src="/uploading/@Model.ExistingImage" alt="@Model.Name" style="width: 100px;" />
+                </div>
+            } *@
+
+            <div class="mb-3">
+                <label>Існуючі зображення:</label>
+                <div class="row">
+                    @foreach (var imagePath in Model.ImagePaths)
+                    {
+                        <div class="col-md-4 mb-3">
+                            <img src="@imagePath" alt="Image" style="width: 150px; height: 150px;" />
+                            <p>@imagePath</p> <!-- Назва файлу або шлях -->
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Зберегти</button>
+            <a asp-action="Index" class="btn btn-secondary">Скасувати</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

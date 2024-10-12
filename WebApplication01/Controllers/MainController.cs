@@ -66,6 +66,126 @@ namespace WebApplication01.Controllers
             return Redirect("/");
         }
 
+        [HttpGet]
+        public IActionResult Edit(int id)
+        {
+            var category = _dbContext.Categories.FirstOrDefault(c => c.Id == id);
+            if (category == null)
+            {
+                return NotFound();
+            }
+
+            var imageBaseName = category.Image;  // Базова назва зображення, без розміру
+            var sizes = new[] { 50, 150, 300, 600, 1200 };
+            var imagePaths = new List<string>();
+
+            foreach (var size in sizes)
+            {
+                var imagePath = $"/uploading/{size}_{imageBaseName}";
+                imagePaths.Add(imagePath);
+            }
+
+            var model = new CategoryEditViewModel
+            {
+                Id = category.Id,
+                Name = category.Name,
+                Description = category.Description,
+                //ExistingImage = category.Image
+                ImagePaths = imagePaths//Список шляхів до зображень
+            };
+            return View(model);
+        }
+
+        //[HttpPost]
+        //public IActionResult Edit(CategoryEditViewModel model)
+        //{
+        //    var entity = _dbContext.Categories.FirstOrDefault(c => c.Id == model.Id);
+        //    if (entity == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    entity.Name = model.Name;
+        //    entity.Description = model.Description;
+
+        //    if (model.Photo != null)
+        //    {
+        //        var dirName = "uploading";
+        //        var dirSave = Path.Combine(_environment.WebRootPath, dirName);
+        //        if (!Directory.Exists(dirSave))
+        //        {
+        //            Directory.CreateDirectory(dirSave);
+        //        }
+
+        //        string fileName = Guid.NewGuid().ToString() + Path.GetExtension(model.Photo.FileName);
+        //        var saveFile = Path.Combine(dirSave, fileName);
+        //        using (var stream = new FileStream(saveFile, FileMode.Create))
+        //        {
+        //            model.Photo.CopyTo(stream);
+        //        }
+
+        //        // Видалення старого зображення
+        //        if (!string.IsNullOrEmpty(entity.Image))
+        //        {
+        //            var oldImagePath = Path.Combine(_environment.WebRootPath, "uploading", entity.Image);
+        //            if (System.IO.File.Exists(oldImagePath))
+        //            {
+        //                System.IO.File.Delete(oldImagePath);
+        //            }
+        //        }
+
+        //        entity.Image = fileName;
+        //    }
+
+        //    _dbContext.SaveChanges();
+        //    return RedirectToAction("Index");
+        //}
+
+        [HttpPost]
+        public IActionResult Edit(CategoryEditViewModel model, IFormFile? Photo)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Якщо дані не валідні, перезавантажуємо сторінку з помилками
+                return View(model);
+            }
+
+            // Отримуємо категорію з бази даних
+            var category = _dbContext.Categories.FirstOrDefault(c => c.Id == model.Id);
+            if (category == null)
+            {
+                return NotFound();
+            }
+
+            // Оновлюємо назву та опис категорії
+            category.Name = model.Name;
+            category.Description = model.Description;
+
+            // Якщо завантажено нове фото
+            if (Photo != null && Photo.Length > 0)
+            {
+                // Видаляємо старі зображення
+                if (!string.IsNullOrEmpty(category.Image))
+                {
+                    _imageWorker.Delete(category.Image);
+                }
+
+                // Зберігаємо нове зображення і отримуємо нову назву файлу
+                var imageName = _imageWorker.Save(Photo);
+                if (!string.IsNullOrEmpty(imageName))
+                {
+                    category.Image = imageName;  // Зберігаємо нову назву файлу у базі даних
+                }
+            }
+
+            // Зберігаємо зміни в базі даних
+            _dbContext.SaveChanges();
+
+            // Перенаправляємо на сторінку з переліком категорій або іншу сторінку
+            return RedirectToAction("Index");
+        }
+
+
         [HttpPost]
         public IActionResult Delete(int id)
         {

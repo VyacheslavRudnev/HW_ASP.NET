@@ -15,6 +15,10 @@
                         <p class="card-text">@item.Description</p>
                         <a href="#" class="btn btn-danger" data-name="@item.Name"
                             data-delete="@item.Id">Видалити</a>
+                        <a asp-action="Edit" class="btn btn-primary" data-name="@item.Name"
+                           asp-route-id="@item.Id">Редагувати</a>
+                        
+
                     </div>
                 </div>
             </div>
