@@ -7,46 +7,47 @@ using WebApplication01.Data;
 
 #nullable disable
 
-namespace WebApplication01.Migrations
+namespace WebApplication01.Migrations;
+
+[DbContext(typeof(AppBimbaDbContext))]//DbContext - це клас, який відповідаї за взаємодію з базою даних
+partial class AppBimbaDbContextModelSnapshot : ModelSnapshot   //ModelSnapshot - це клас, який відповідає за збереження моделі бази даних
 {
-    [DbContext(typeof(AppBimbaDbContext))]
-    partial class AppBimbaDbContextModelSnapshot : ModelSnapshot
+    protected override void BuildModel(ModelBuilder modelBuilder)   //BuildModel - це метод, який викликається для побудови моделі бази даних
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
-        {
 #pragma warning disable 612, 618
-            modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.8")
-                .HasAnnotation("Relational:MaxIdentifierLength", 63);
+        modelBuilder
+            .HasAnnotation("ProductVersion", "8.0.8")
+            .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+        NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder); //UseIdentityByDefaultColumns - це метод, який вказує,
+                                                                                //що використовувати стовпці з автоматичним збільшенням для створення ідентифікаторів
 
-            modelBuilder.Entity("WebApplication01.Data.Entities.CategoryEntity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+        modelBuilder.Entity("WebApplication01.Data.Entities.CategoryEntity", b =>   //Entity - це метод, який вказує на те, що цей клас є сутністю бази даних
+            {
+                b.Property<int>("Id")           //Property - це метод, який вказує на те, що це властивість сутності
+                    .ValueGeneratedOnAdd()      //ValueGeneratedOnAdd - це метод, який вказує, що значення цієї властивості буде генеруватися автоматично при додаванні нового запису
+                    .HasColumnType("integer");  //HasColumnType - це метод, який вказує на те, що цей стовпець має тип integer
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id")); //UseIdentityByDefaultColumn - це метод, який вказує,
+                                                                                                   //що використовувати стовпець з автоматичним збільшенням для створення ідентифікаторів
 
-                    b.Property<string>("Description")
-                        .HasMaxLength(4000)
-                        .HasColumnType("character varying(4000)");
+                b.Property<string>("Description")
+                    .HasMaxLength(4000)
+                    .HasColumnType("character varying(4000)");
 
-                    b.Property<string>("Image")
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
+                b.Property<string>("Image")
+                    .HasMaxLength(500)
+                    .HasColumnType("character varying(500)");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
+                b.Property<string>("Name")
+                    .IsRequired()
+                    .HasMaxLength(255)
+                    .HasColumnType("character varying(255)");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.ToTable("tbl_categories");
-                });
+                b.ToTable("tbl_categories");
+            });
 #pragma warning restore 612, 618
-        }
     }
 }

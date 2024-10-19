@@ -1,10 +1,10 @@
-﻿@model WebApplication01.Models.Category.CategoryEditViewModel
+﻿@model WebApplication01.Models.Category.CategoryEditViewModel // Підключаємо модель
 
-<h1 class="text-center">Редагувати категорію</h1>
+<h1 class="text-center">Редагувати категорію</h1> @*Заголовок сторінки*@
 
 <div class="container">
     <div class="row">
-        <form method="post" class="col-md-6 offset-md-3" enctype="multipart/form-data">
+        <form method="post" class="col-md-6 offset-md-3" enctype="multipart/form-data"> @*Форма для редагування категорії*@
             <div class="mb-3">
                 <label asp-for="Name" class="form-label">Назва категорії</label>
                 <input type="text" class="form-control" asp-for="Name">
@@ -21,9 +21,9 @@
                 <input class="form-control" type="file" asp-for="Photo">
             </div>
             
-            @if (!string.IsNullOrEmpty(Model.ExistingImage))
+            @if (!string.IsNullOrEmpty(Model.ExistingImage))    // Перевірка на наявність зображення
             {
-                <div class="mb-3">
+                <div class="mb-3">  
                     <label>Поточне зображення:</label>
                     <img src="/uploading/150_@Model.ExistingImage" alt="@Model.Name" style="width: 150px; height: 150px;" />
                 </div>
@@ -36,5 +36,5 @@
 </div>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+    <partial name="_ValidationScriptsPartial" />    @*підключення скріпту валідації*@
 }

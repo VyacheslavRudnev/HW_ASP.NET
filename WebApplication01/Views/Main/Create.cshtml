@@ -1,10 +1,10 @@
-﻿@model WebApplication01.Models.Category.CategoryCreateViewModel
+﻿@model WebApplication01.Models.Category.CategoryCreateViewModel     // Підключаємо модель
 
-<h1 class="text-center">Додати нову категорію</h1>
+<h1 class="text-center">Додати нову категорію</h1>  @*Назва (заголовок) сторінки*@
 
 <div class="container">
     <div class="row">
-        <form method="post" class="col-md-6 offset-md-3" enctype="multipart/form-data">
+        <form method="post" class="col-md-6 offset-md-3" enctype="multipart/form-data"> @*форма для створення нової категорії*@
             <div class="mb-3">
                 <label asp-for="Name" class="form-label"></label>
                 <input type="text" class="form-control" asp-for="Name">

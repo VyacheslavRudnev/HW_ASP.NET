@@ -1,13 +1,13 @@
-﻿@model List<WebApplication01.Data.Entities.CategoryEntity>
+﻿@model List<WebApplication01.Data.Entities.CategoryEntity>  //підключаємо модель
 
-<h1 class="text-center">оберіть потрібну категорію</h1>
+<h1 class="text-center">оберіть потрібну категорію</h1> @*вивід заголовку*@
 
 <div class="container">
-    <a asp-action="Create" class="btn btn-success"><link href="#" rel="stylesheet" />Додати</a>
+    <a asp-action="Create" class="btn btn-success"><link href="#" rel="stylesheet" />Додати</a> @*кнопка для додаванняи категорії*@
     <div class="row">
-        @foreach (var item in Model)
+        @foreach (var item in Model) //перебираємо всі категорії
         {
-            <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-4" id="@(" ProductItem" + @item.Id)">
+            <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-4" id="@(" ProductItem" + @item.Id)"> @* вивід категорій *@
                 <div class="card" style="width: 100%;">
                     <div class="img-container">
                         <img src="/uploading/300_@item.Image" class="card-img-top">
@@ -26,7 +26,7 @@
         }
     </div>
 </div>
-
+@* Модальне вікно для підтвердження видалення *@
 <div class="modal" id="modalDelete" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -44,34 +44,34 @@
         </div>
     </div>
 </div>
-
-@section Scripts {
-	<script src="/lib/axios/axios.min.js"></script>
+@* скрипт для видалення категорії *@
+@section Scripts {  
+	<script src="/lib/axios/axios.min.js"></script> @* підключаємо axios *@
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            var modalDelete = new bootstrap.Modal(document.getElementById('modalDelete'));
+            var modalDelete = new bootstrap.Modal(document.getElementById('modalDelete')); //Підключаємо модальне вікно
 
-            var buttonsDelete = document.querySelectorAll('[data-delete]');
-            var categoryName = document.getElementById("categoryName");
-            var idDelete = 0;
-            buttonsDelete.forEach(btn => {
-                btn.addEventListener("click", function (event) {
-                    event.preventDefault();
-                    var id = this.getAttribute('data-delete');
-                    var name = this.getAttribute('data-name');
-                    idDelete = id;
-                    categoryName.innerHTML = name;
-                    modalDelete.show();
+            var buttonsDelete = document.querySelectorAll('[data-delete]'); //Отримуємо всі кнопки видалення
+            var categoryName = document.getElementById("categoryName");     //Отримуємо назву категорії
+            var idDelete = 0;                                               //Ініціалізуємо змінну для зберігання id категорії
+            buttonsDelete.forEach(btn => {                      //Перебираємо всі кнопки
+                btn.addEventListener("click", function (event) {            //При кліку на кнопку
+                    event.preventDefault();                                 //Відміняємо стандартну поведінку
+                    var id = this.getAttribute('data-delete');              //Отримуємо id категорії
+                    var name = this.getAttribute('data-name');              //Отримуємо назву категорії
+                    idDelete = id;                                          //Зберігаємо id категорії
+                    categoryName.innerHTML = name;                          //  Виводимо назву категорії
+                    modalDelete.show();                                     //  Показуємо модальне вікно
                 });
             });
 
-            document.getElementById("deleteYes").addEventListener("click", () => {
-                console.log("Delete by id", idDelete);
-                axios.post("/Main/Delete/" + idDelete)
-                    .then(res => { //Очікуємо результат від сервера
-                        //Після успішного видалення перегружаємо сторінку
-                        modalDelete.hide();
-                        document.getElementById(" ProductItem" + idDelete).remove();
+            document.getElementById("deleteYes").addEventListener("click", () => {  //При кліку на кнопку підтвердження видалення
+                console.log("Delete by id", idDelete);      //Виводимо id категорії в консоль
+                axios.post("/Main/Delete/" + idDelete)      //Відправляємо запит на сервер для видалення категорії
+                    .then(res => {                  //Очікуємо результат від сервера
+                                                    //Після успішного видалення перегружаємо сторінку
+                        modalDelete.hide();         //Ховаємо модальне вікно
+                        document.getElementById(" ProductItem" + idDelete).remove();    //Видаляємо категорію зі сторінки
                 });
             });
         });
