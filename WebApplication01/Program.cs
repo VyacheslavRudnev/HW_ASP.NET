@@ -1,7 +1,9 @@
+using Bogus;
 using Microsoft.EntityFrameworkCore;
 using WebApplication01.Data;
 using WebApplication01.Data.Entities;
-using WebApplication01.interfaces;
+using WebApplication01.Interfaces;
+using WebApplication01.Mapper;
 using WebApplication01.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,8 +12,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppBimbaDbContext>(options =>
 	options.UseNpgsql(builder.Configuration.GetConnectionString("MyConnectionDB")));
 
-builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<IImageWorker, ImageWorker>();
+
+builder.Services.AddAutoMapper(typeof(AppMapperProfile));
+
+builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
@@ -73,6 +78,40 @@ using (var serviceScope = app.Services.CreateScope())
 		context.Categories.Add(bread);
 		context.SaveChanges();
 	}
+    if(!context.Products.Any())
+    {
+        var categories = context.Categories.ToList();
+
+        var fakerProduct = new Faker<ProductEntity>("uk")
+                    .RuleFor(u => u.Name, (f, u) => f.Commerce.Product())
+                    .RuleFor(u => u.Price, (f, u) => decimal.Parse(f.Commerce.Price()))
+                    .RuleFor(u => u.Category, (f, u) => f.PickRandom(categories));
+
+        string url = "https://picsum.photos/1200/800?product";
+
+        var products = fakerProduct.GenerateLazy(30);
+
+        Random r = new Random();
+
+        foreach (var product in products)
+        {
+            context.Add(product);
+            context.SaveChanges();
+            int imageCount = r.Next(3, 5);
+            for (int i = 0; i < imageCount; i++)
+            {
+                var imageName = imageWorker.Save(url);
+                var imageProduct = new ProductImageEntity
+                {
+                    Product = product,
+                    Image = imageName,
+                    Priority = i
+                };
+                context.Add(imageProduct);
+                context.SaveChanges();
+            }
+        }
+    }
 }
 
 app.Run();

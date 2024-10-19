@@ -1,0 +1,121 @@
+﻿@model List<ProductItemViewModel>
+
+<h1 class="text-center">Продукти</h1>
+
+<div class="container">
+    <a asp-action="Create" class="btn btn-success">Додати</a>
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-6 col-sm-6 col-lg-4 col-xl-3" id="@("ProductItem"+@item.Id)">
+                <div class="card" style="width: 100%;">
+
+                    <div id="carouselExampleIndicators_@item.Id" class="carousel slide">
+                        <div class="carousel-indicators">
+                            @for (int i = 0; i < item.Images.Count; i++)
+                            {
+                                <button type="button" data-bs-target="#carouselExampleIndicators_@item.Id" data-bs-slide-to="@i" class="@(i == 0 ? "active" : "")" aria-current="@(i == 0 ? "true" : "false")" aria-label="Slide @(i + 1)"></button>
+                            }
+                        </div>
+                        <div class="carousel-inner">
+                            @for (int i = 0; i < item.Images.Count; i++)
+                            {
+                                var imgItem = item.Images.ElementAt(i);
+                                <div class="carousel-item @(i == 0 ? "active" : "")">
+                                    <picture>
+                                        <!-- Image for screens 1280px and above -->
+                                        <source media="(min-width: 1280px)" srcset="/uploading/600_@imgItem">
+
+                                        <!-- Image for screens 992px and above -->
+                                        <source media="(min-width: 992px)" srcset="/uploading/300_@imgItem">
+
+                                        <!-- Image for screens 768px and above -->
+                                        <source media="(min-width: 768px)" srcset="/uploading/600_@imgItem">
+
+                                        <!-- Image for screens 360px and above -->
+                                        <source media="(min-width: 360px)" srcset="/uploading/600_@imgItem">
+
+                                        <!-- Fallback image if none of the above conditions match -->
+                                        <img src="/uploading/300_@imgItem" class="d-block w-100" alt="Responsive Image Example">
+                                    </picture>
+
+                                    @* <img src="/uploading/300_@imgItem" class="d-block w-100" alt="..."> *@
+                                </div>
+                            }
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators_@item.Id" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators_@item.Id" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+
+
+                    <div class="card-body">
+                        <h5 class="card-title">@item.Name</h5>
+                        <p class="card-text">@item.Price</p>
+                        <a href="#" class="btn btn-danger" data-name="@item.Name"
+                           data-delete="@item.Id">Delete</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="modal" id="modalDelete" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Ви дійсно бажаєте видалити</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Буде проведено видалення <span id="categoryName"></span>?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Скасувати</button>
+                <button type="button" class="btn btn-primary" id="deleteYes">Підтвердити</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script src="/lib/axios/axios.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            var modalDelete = new bootstrap.Modal(document.getElementById('modalDelete'));
+
+            var buttonsDelete = document.querySelectorAll('[data-delete]');
+            var categoryName = document.getElementById("categoryName");
+            var idDelete = 0;
+            buttonsDelete.forEach(btn => {
+                btn.addEventListener("click", function (event) {
+                    event.preventDefault();
+                    var id = this.getAttribute('data-delete');
+                    var name = this.getAttribute('data-name');
+                    idDelete = id;
+                    categoryName.innerHTML = name;
+                    modalDelete.show();
+                });
+            });
+
+            document.getElementById("deleteYes").addEventListener("click", () => {
+                console.log("Delete by id", idDelete);
+                //Виконуємо асинхроний запит на сервер через JavaScript
+                axios.post("/Main/Delete/" + idDelete)
+                    .then(res => { //Очікуємо результат від сервера
+                        //Після успішного видалення перегружаємо сторінку
+                        //window.location.reload();
+                        modalDelete.hide();
+                        document.getElementById("ProductItem" + idDelete).remove();
+                    });
+            });
+        });
+    </script>
+}

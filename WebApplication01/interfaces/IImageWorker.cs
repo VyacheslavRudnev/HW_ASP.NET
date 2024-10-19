@@ -1,4 +1,4 @@
-﻿namespace WebApplication01.interfaces;
+﻿namespace WebApplication01.Interfaces;
 
 public interface IImageWorker
 {

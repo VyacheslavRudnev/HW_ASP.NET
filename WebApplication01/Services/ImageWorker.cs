@@ -1,6 +1,6 @@
 ﻿using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
-using WebApplication01.interfaces;
+using WebApplication01.Interfaces;
 
 namespace WebApplication01.Services;
 
