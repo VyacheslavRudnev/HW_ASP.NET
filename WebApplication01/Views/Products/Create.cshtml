@@ -1,0 +1,34 @@
+﻿
+@model ProductCreateViewModel
+
+<h1 class="text-center">Додати новий продукт</h1>
+
+<div class="container">
+    <div class="row">
+        <form method="post" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label"></label>
+                <input type="text" class="form-control" asp-for="Name">
+            </div>
+
+            <div class="form-group">
+                <label asp-for="CategoryId"></label>
+                <select asp-for="CategoryId" asp-items="@Model.CategoryList" class="form-select">
+                    <option disabled selected></option>
+                </select>
+                <span asp-validation-for="CategoryId" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Photos" class="form-label"></label>
+                <input class="form-control" type="file" asp-for="Photos" multiple>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Price" class="form-label"></label>
+                <input type="number" class="form-control" asp-for="Price" step="0.01" min="0">
+            </div>
+            <button type="submit" class="btn btn-primary">Додати</button>
+        </form>
+    </div>
+</div>
