@@ -12,3 +12,21 @@ body {
     height: 100%;
     object-fit: cover; /* Зберігає пропорції зображення та робить його масштабування */
 }
+
+/* Cтилі для зображень продуктів на сторінці інфо */
+.preview-images {
+    margin-top: 20px; /* Відступ між каруселлю і прев'юшками */
+}
+
+.preview-image-item {
+    margin-right: 10px; /* Відступи між прев'ю зображеннями */
+}
+
+.preview-image-item img {
+    cursor: pointer;
+    border: 2px solid transparent;
+}
+
+.preview-image-item img:hover {
+    border-color: #007bff; /* При наведенні змінюється колір рамки */
+}

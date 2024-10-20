@@ -1,0 +1,43 @@
+﻿@model ProductItemViewModel
+
+<h1 class ="text-center">Детальна інформація про @Model.Name</h1>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <div id="carouselInfo" class="carousel slide">
+                <div class="carousel-inner">
+                    @for (int i = 0; i < Model.Images.Count; i++)
+                    {
+                        var imgItem = Model.Images.ElementAt(i);
+                        <div class="carousel-item @(i == 0 ? "active" : "")">
+                            <img src="/uploading/600_@imgItem" class="d-block w-100" alt="Product Image">
+                        </div>
+                    }
+                </div>
+                
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselInfo" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselInfo" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+
+                <div class="preview-images d-flex justify-content-between">
+                    @foreach (var imgItem in Model.Images)
+                    {
+                        <div class="preview-image-item">
+                            <img src="/uploading/300_@imgItem" class="img-fluid" alt="Product Image Preview" style="max-width: 80px;">
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <h2>Назва продукту: @Model.Name</h2>
+            <p>Ціна: @Model.Price</p>
+        </div>
+    </div>
+</div>
