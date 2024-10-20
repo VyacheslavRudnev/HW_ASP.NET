@@ -75,7 +75,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p>Буде проведено видалення <span id="categoryName"></span>?</p>
+                <p>Буде проведено видалення <span id="productName"></span>?</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Скасувати</button>
@@ -93,7 +93,7 @@
             var modalDelete = new bootstrap.Modal(document.getElementById('modalDelete'));
 
             var buttonsDelete = document.querySelectorAll('[data-delete]');
-            var categoryName = document.getElementById("categoryName");
+            var productName = document.getElementById("productName");
             var idDelete = 0;
             buttonsDelete.forEach(btn => {
                 btn.addEventListener("click", function (event) {
@@ -101,7 +101,7 @@
                     var id = this.getAttribute('data-delete');
                     var name = this.getAttribute('data-name');
                     idDelete = id;
-                    categoryName.innerHTML = name;
+                    productName.innerHTML = name;
                     modalDelete.show();
                 });
             });
@@ -109,7 +109,7 @@
             document.getElementById("deleteYes").addEventListener("click", () => {
                 console.log("Delete by id", idDelete);
                 //Виконуємо асинхроний запит на сервер через JavaScript
-                axios.post("/Main/Delete/" + idDelete)
+                axios.post("/Products/Delete/" + idDelete)
                     .then(res => { //Очікуємо результат від сервера
                         //Після успішного видалення перегружаємо сторінку
                         //window.location.reload();
