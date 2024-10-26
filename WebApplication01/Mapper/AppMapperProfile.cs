@@ -19,5 +19,16 @@ public class AppMapperProfile : Profile
         //string - . , - replace . (,)
         CreateMap<ProductCreateViewModel, ProductEntity>()
                  .ForMember(x => x.Price, opt => opt.MapFrom(p => Decimal.Parse(p.Price.Replace('.', ','), new CultureInfo("uk-UA"))));
+
+        //маппінг для редагування продукту
+        CreateMap<ProductEntity, ProductEditViewModel>()
+            .ForMember(dest => dest.CategoryList, opt => opt.Ignore()) // Ігноруємо, оскільки заповнюємо вручну
+            .ForMember(dest => dest.Photos, opt => opt.Ignore());       // Ігноруємо, бо це список файлів
+
+        // Маппінг з ProductEditViewModel назад до ProductEntity
+        CreateMap<ProductEditViewModel, ProductEntity>()
+            .ForMember(dest => dest.ProductImages, opt => opt.Ignore())
+            .ForMember(x => x.Price, opt => opt.MapFrom(p => Decimal.Parse(p.Price.Replace('.', ','), new CultureInfo("uk-UA")))); ; // Ігноруємо ProductImages, бо додаємо їх окремо
+
     }
 }

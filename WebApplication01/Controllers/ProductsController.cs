@@ -133,4 +133,67 @@ public class ProductsController : Controller
         return RedirectToAction("Index");
     }
 
+    [HttpGet]
+    public IActionResult Edit(int id)
+    {
+        var product = _dbContext.Products
+            .Include(p => p.ProductImages)
+            .FirstOrDefault(p => p.Id == id);
+
+        if (product == null)
+        {
+            return NotFound();
+        }
+
+        var categories = _dbContext.Categories
+            .Select(x => new { Value = x.Id, Text = x.Name })
+            .ToList();
+
+        var viewModel = _mapper.Map<ProductEditViewModel>(product);  // Мапимо продукт до ViewModel
+        viewModel.CategoryList = new SelectList(categories, "Value", "Text");  // Заповнюємо список категорій
+
+        viewModel.ExistingImages = product.ProductImages
+        .Select(img => img.Image)
+        .ToList();
+
+        return View(viewModel);
+    }
+
+    [HttpPost]
+    public IActionResult Edit(ProductEditViewModel model)
+    {
+        var product = _dbContext.Products
+            .Include(p => p.ProductImages)
+            .FirstOrDefault(p => p.Id == model.Id);
+
+        if (product == null)
+        {
+            return NotFound();
+        }
+
+        _mapper.Map(model, product);
+
+        if (model.Photos != null && model.Photos.Count > 0)
+        {
+            int priority = product.ProductImages.Count;
+            foreach (var photo in model.Photos)
+            {
+                if (photo.Length > 0)
+                {
+                    var productImageEntity = new ProductImageEntity()
+                    {
+                        Product = product,
+                        Image = _imageWorker.Save(photo),
+                        Priority = priority++
+                    };
+                    product.ProductImages.Add(productImageEntity);
+                }
+            }
+        }
+
+        _dbContext.SaveChanges();
+
+        return RedirectToAction("Index");
+    }
+
 }

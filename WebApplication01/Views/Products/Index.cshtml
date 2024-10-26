@@ -51,6 +51,7 @@
                             <span class="carousel-control-next-icon" aria-hidden="true"></span>
                             <span class="visually-hidden">Next</span>
                         </button>
+
                     </div>
 
 
@@ -60,6 +61,7 @@
                         <a href="#" class="btn btn-danger" data-name="@item.Name"
                            data-delete="@item.Id">Видалити</a>
                         <a asp-action="Info" asp-route-id="@item.Id" class="btn btn-info">Детальніше</a>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary">Редагувати</a>
                     </div>
                 </div>
             </div>

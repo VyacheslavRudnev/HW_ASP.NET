@@ -1,0 +1,50 @@
+﻿@model WebApplication01.Models.Product.ProductEditViewModel
+
+<h1 class="text-center">Редагування продукту</h1>
+<div class="container">
+    <div class="row">
+        <form method="post" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label"></label>
+                <input type="text" class="form-control" asp-for="Name">
+            </div>
+
+            <div class="form-group">
+                <label asp-for="CategoryId"></label>
+                <select asp-for="CategoryId" asp-items="@Model.CategoryList" class="form-select">
+                    <option disabled selected></option>
+                </select>
+                <span asp-validation-for="CategoryId" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Photos" class="form-label"></label>
+                <input class="form-control" type="file" asp-for="Photos" multiple>
+            </div>
+
+            @if (Model.ExistingImages != null && Model.ExistingImages.Count > 0)
+            {
+                <div class="mb-3">
+                    <label>Поточні зображення:</label>
+                    <div class="d-flex flex-wrap">
+                        @foreach (var image in Model.ExistingImages)
+                        {
+                            <div class="me-2 mb-2">
+                                <img src="/uploading/150_@image" alt="@Model.Name" style="width: 100px; height: 100px;" />
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+
+            <div class="mb-3">
+                <label asp-for="Price" class="form-label"></label>
+                <input type="number" class="form-control" asp-for="Price" step="0.01" min="0">
+            </div>
+           
+
+            <button type="submit" class="btn btn-primary">Зберегти</button>
+            <a asp-action="Index" class="btn btn-secondary">Скасувати</a>
+        </form>
+    </div>
+</div>
