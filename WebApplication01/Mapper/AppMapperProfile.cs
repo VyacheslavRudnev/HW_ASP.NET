@@ -3,7 +3,7 @@ using System.Globalization;
 using WebApplication01.Data.Entities;
 using WebApplication01.Models.Category;
 using WebApplication01.Models.Product;
-
+//фінальна версія маппера для проекту
 namespace WebApplication01.Mapper;
 
 public class AppMapperProfile : Profile
